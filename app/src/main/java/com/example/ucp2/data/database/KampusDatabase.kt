@@ -19,7 +19,7 @@ abstract class KampusDatabase : RoomDatabase() {
         @Volatile
         private var Instance: KampusDatabase? = null
 
-        fun geDtabase(context: Context): KampusDatabase {
+        fun getDatabase(context: Context): KampusDatabase {
             return (Instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context.applicationContext,
