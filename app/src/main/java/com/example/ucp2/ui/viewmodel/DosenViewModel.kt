@@ -23,8 +23,8 @@ class DosenViewModel (private val repositoryDsn: RepositoryDsn) : ViewModel(){
     //Validasi input nama pengguna
     private fun validateFields(): Boolean {
         val event = uiState.dosenEvent
-        val errorState = FormErrorState(
-            nim = if (event.nidn.isNotEmpty()) null else "Nim tidak boleh kosong",
+        val errorState = DsnFormErrorState(
+            nidn = if (event.nidn.isNotEmpty()) null else "Nidn tidak boleh kosong",
             nama = if (event.nama.isNotEmpty()) null else "nama tidak boleh kosong",
             jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "jenisKelamin tidak boleh kosong",
         )
@@ -43,7 +43,7 @@ class DosenViewModel (private val repositoryDsn: RepositoryDsn) : ViewModel(){
                     uiState = uiState.copy(
                         snackBarMessage = "Data Berhasil disimpan",
                         dosenEvent = DosenEvent(), //reset input form
-                        isEntryValid = FormErrorState() // reset error state
+                        isEntryValid = DsnFormErrorState() // reset error state
                     )
                 }catch (e: Exception){
                     uiState = uiState.copy(
@@ -66,21 +66,17 @@ class DosenViewModel (private val repositoryDsn: RepositoryDsn) : ViewModel(){
 
 data class DsnUiState(
     val dosenEvent: DosenEvent = DosenEvent(),
-    val isEntryValid: FormErrorState = FormErrorState(),
+    val isEntryValid: DsnFormErrorState = DsnFormErrorState(),
     val snackBarMessage: String? = null,
 )
 
-data class FormErrorState(
-    val nim: String? =null,
+data class DsnFormErrorState(
+    val nidn: String? =null,
     val nama: String? =null,
     val jenisKelamin: String? =null,
-    val alamat: String? =null,
-    val kelas: String? =null,
-    val angkatan: String? =null,
 ){
     fun isValid(): Boolean {
-        return nim == null && nama == null && jenisKelamin == null &&
-                alamat == null && kelas == null && angkatan == null
+        return nidn == null && nama == null && jenisKelamin == null
     }
 }
 
