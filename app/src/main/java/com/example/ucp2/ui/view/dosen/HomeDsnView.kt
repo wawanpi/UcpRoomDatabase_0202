@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2.data.entity.Dosen
+import com.example.ucp2.ui.costumwidget.CustomTopAppBar
 import com.example.ucp2.ui.viewmodel.HomeDsnView
 import com.example.ucp2.ui.viewmodel.HomeUiState
 import com.example.ucp2.ui.viewmodel.PenyediaDsnViewModel
@@ -49,7 +50,7 @@ fun HomeDsnView(
 ){
     Scaffold (
         topBar = {
-            CustomTopAppBar(
+           CustomTopAppBar (
                 judul = "Daftar Dosen",
                 showBackButton = false,
                 onBack = { },
