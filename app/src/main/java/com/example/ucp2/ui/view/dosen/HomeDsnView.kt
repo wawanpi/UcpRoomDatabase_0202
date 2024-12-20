@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,11 +37,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2.data.entity.Dosen
 import com.example.ucp2.ui.viewmodel.HomeDsnView
 import com.example.ucp2.ui.viewmodel.HomeUiState
+import com.example.ucp2.ui.viewmodel.PenyediaDsnViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeDsnView(
-    viewModel : HomeDsnView = viewModel(factory = PenyediaViewModel.Factory),
+    viewModel : HomeDsnView = viewModel(factory = PenyediaDsnViewModel.Factory),
     onAddDsn: () -> Unit = { },
     onDetailClick: (String) -> Unit = { },
     modifier: Modifier = Modifier,
