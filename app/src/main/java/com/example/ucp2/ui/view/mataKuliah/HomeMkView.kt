@@ -42,10 +42,13 @@ import com.example.ucp2.ui.viewmodel.HomeMkViewModel
 import com.example.ucp2.ui.viewmodel.PenyediaMkViewModel
 import kotlinx.coroutines.launch
 
+
+
 @Composable
 fun HomeMkView(
     viewModel : HomeMkViewModel = viewModel(factory = PenyediaMkViewModel.Factory),
     onAddMk: () -> Unit = { },
+    onBack: () -> Unit = { },
     onDetailClick: (String) -> Unit = { },
     modifier: Modifier = Modifier,
 ){
@@ -53,8 +56,8 @@ fun HomeMkView(
         topBar = {
             CustomTopAppBar(
                 judul = "Daftar Mata Kuliah",
-                showBackButton = false,
-                onBack = { },
+                showBackButton = true,
+                onBack = onBack,
                 modifier = modifier
             )
         },
