@@ -6,21 +6,93 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ucp2.ui.costumwidget.CustomTopAppBar
+import com.example.ucp2.ui.navigation.AlamatNavigasi
 import com.example.ucp2.ui.viewmodel.MataKuliahEvent
+import com.example.ucp2.ui.viewmodel.MataKuliahViewModel
 import com.example.ucp2.ui.viewmodel.MkFormErrorState
 import com.example.ucp2.ui.viewmodel.MkUiState
+import com.example.ucp2.ui.viewmodel.PenyediaMkViewModel
+import kotlinx.coroutines.launch
 
+object DestinasiInsert : AlamatNavigasi {
+    override val route: String = "insert_mk"
+}
+
+@Composable
+fun InsertMkView(
+    onBack: () -> Unit,
+    onNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MataKuliahViewModel = viewModel (factory = PenyediaMkViewModel.Factory)
+){
+    val uiState = viewModel.uiState // Ambil UI state dari ViewModel
+    val snackbarHostState = remember{ SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    //Observasi perubahan snackbarMessage
+
+    LaunchedEffect(uiState.snackBarMessage) {
+        uiState.snackBarMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+
+    Scaffold (
+        modifier = modifier,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { padding ->
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(padding)
+                .padding(16.dp)
+        ){
+
+            CustomTopAppBar(
+                onBack = onBack,
+                showBackButton = true,
+                judul = "Tambah Mata Kuliah"
+            )
+
+            //Isi Body
+            InsertBodyMk(
+                uiState = uiState,
+                onValueChange = { updateEvent ->
+                    viewModel.updateState(updateEvent)
+                },
+                onClick = {
+                    coroutineScope.launch {
+                        viewModel.saveData() //Simpan data
+                    }
+                    onNavigate()
+                }
+            )
+        }
+    }
+}
 
 @Composable
 fun InsertBodyMk(
