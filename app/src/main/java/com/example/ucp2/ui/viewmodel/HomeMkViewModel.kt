@@ -3,6 +3,7 @@ package com.example.ucp2.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ucp2.data.entity.MataKuliah
+import com.example.ucp2.repository.RepositoryDsn
 import com.example.ucp2.repository.RepositoryMk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 
 
 class HomeMkViewModel(
-    private val repositoryMk: RepositoryMk
+    private val repositoryMk: RepositoryMk,
 ) : ViewModel() {
     val homeMkUiState: StateFlow<HomeMkUiState> = repositoryMk.getAllMk()
         .filterNotNull()
