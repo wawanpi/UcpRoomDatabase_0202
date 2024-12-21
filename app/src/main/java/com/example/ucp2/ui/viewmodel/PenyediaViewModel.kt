@@ -7,33 +7,43 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.ucp2.KampusApp
 
-object PenyediaMkViewModel{
+object PenyediaMkViewModel {
     val Factory = viewModelFactory {
         initializer {
+            DosenViewModel(
+                kampusApp().containerApp.repositoryDsn,
+            )
+        }
+        initializer {
+            HomeDsnViewModel(
+                kampusApp().containerApp.repositoryDsn,
+            )
+        }
+        initializer {
             MataKuliahViewModel(
-                kampusApp().containerApp.repositoryMk
+                kampusApp().containerApp.repositoryMk,
             )
         }
         initializer {
             HomeMkViewModel(
-                mkApp().containerApp.repositoryMk
+                kampusApp().containerApp.repositoryMk,
             )
         }
         initializer {
             DetailMkViewModel(
                 createSavedStateHandle(),
-                mkApp().containerApp.repositoryMk,
+                kampusApp().containerApp.repositoryMk,
             )
         }
         initializer {
             UpdateMkViewModel(
                 createSavedStateHandle(),
-                mkApp().containerApp.repositoryMk
+                kampusApp().containerApp.repositoryMk,
             )
         }
     }
 }
 
 
-fun CreationExtras.mkApp() : KampusApp =
+fun CreationExtras.kampusApp() : KampusApp =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as KampusApp)
