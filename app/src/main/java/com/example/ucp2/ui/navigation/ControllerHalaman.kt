@@ -3,14 +3,19 @@ package com.example.ucp2.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ucp2.ui.view.HomeView
+import com.example.ucp2.ui.view.dosen.DestinasiInsert
 import com.example.ucp2.ui.view.dosen.HomeDsnView
 import com.example.ucp2.ui.view.dosen.InsertDsnView
-import com.example.ucp2.ui.view.mataKuliah.DestinasiInsert
+import com.example.ucp2.ui.view.mataKuliah.DestinasiInsertMk
 import com.example.ucp2.ui.view.mataKuliah.HomeMkView
+import com.example.ucp2.ui.view.mataKuliah.InsertMkView
+import com.example.ucp2.ui.viewmodel.DetailMkViewModel
 
 @Composable
 fun ControllerHalaman(
@@ -64,7 +69,7 @@ fun ControllerHalaman(
         composable(route = HomeMkRoute.route) {
             HomeMkView(
                 onAddMk = {
-                    navController.navigate(DestinasiInsert.route)
+                    navController.navigate(DestinasiInsertMk.route)
                 },
                 onDetailClick = { kode ->
                     // Tambahkan logika navigasi ke detail
@@ -75,14 +80,35 @@ fun ControllerHalaman(
             )
         }
         composable(
-            route = DestinasiInsert.route
+            route = DestinasiInsertMk.route
         )
         {
-            InsertDsnView(
+            InsertMkView(
                 onBack = { navController.popBackStack() },
                 onNavigate = { navController.popBackStack() },
                 modifier = modifier,
             )
         }
+        composable(
+            DestinasiDetail.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetail.KODE) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val kode = it.arguments?.getString(DestinasiDetail.KODE)
+            kode?.let { kode ->
+                DetailMkView(
+                    onBack = { navController.popBackStack() },
+                    onEditClick = { navController.navigate("${DestinasiUpdate.route}/$it") },
+                    modifier = modifier,
+                    onDeleteClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+
     }
 }
