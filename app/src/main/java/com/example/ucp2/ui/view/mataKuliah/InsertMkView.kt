@@ -34,7 +34,7 @@ import com.example.ucp2.ui.viewmodel.MkUiState
 import com.example.ucp2.ui.viewmodel.PenyediaMkViewModel
 import kotlinx.coroutines.launch
 
-object DestinasiInsert : AlamatNavigasi {
+object DestinasiInsertMk : AlamatNavigasi {
     override val route: String = "insert_mk"
 }
 

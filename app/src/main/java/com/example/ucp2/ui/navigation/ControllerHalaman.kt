@@ -13,8 +13,10 @@ import com.example.ucp2.ui.view.dosen.DestinasiInsert
 import com.example.ucp2.ui.view.dosen.HomeDsnView
 import com.example.ucp2.ui.view.dosen.InsertDsnView
 import com.example.ucp2.ui.view.mataKuliah.DestinasiInsertMk
+import com.example.ucp2.ui.view.mataKuliah.DetailMkView
 import com.example.ucp2.ui.view.mataKuliah.HomeMkView
 import com.example.ucp2.ui.view.mataKuliah.InsertMkView
+import com.example.ucp2.ui.view.mataKuliah.UpdateMkView
 import com.example.ucp2.ui.viewmodel.DetailMkViewModel
 
 @Composable
@@ -72,8 +74,8 @@ fun ControllerHalaman(
                     navController.navigate(DestinasiInsertMk.route)
                 },
                 onDetailClick = { kode ->
-                    // Tambahkan logika navigasi ke detail
-                    println("Navigasi ke detail dengan Kode: $kode")
+                    navController.navigate("${DestinasiDetail.route}/$kode")
+                    println("PengelolaHalaman: kode =$kode")
                 },
                 onBack = { navController.popBackStack() },
                 modifier = modifier,
@@ -101,7 +103,7 @@ fun ControllerHalaman(
             kode?.let { kode ->
                 DetailMkView(
                     onBack = { navController.popBackStack() },
-                    onEditClick = { navController.navigate("${DestinasiUpdate.route}/$it") },
+                    onEditClick = { navController.navigate( "${DestinasiUpdate.route}/$it") },
                     modifier = modifier,
                     onDeleteClick = {
                         navController.popBackStack()
@@ -109,6 +111,22 @@ fun ControllerHalaman(
                 )
             }
         }
-
+        composable(
+            DestinasiUpdate.routeWithArg,
+            arguments = listOf(
+                navArgument(DestinasiUpdate.KODE) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            UpdateMkView(
+                onBack = { navController.popBackStack() },
+                onNavigate = { navController.popBackStack() },
+                modifier = modifier,
+            )
+        }
     }
 }
+
+
+

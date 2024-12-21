@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ucp2.data.entity.MataKuliah
 import com.example.ucp2.repository.RepositoryDsn
 import com.example.ucp2.repository.RepositoryMk
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MataKuliahViewModel (
@@ -20,9 +21,7 @@ class MataKuliahViewModel (
 
     //Memperbarui state berdasarkan input pengguna
     fun updateState(mataKuliahEvent: MataKuliahEvent){
-        uiState = uiState.copy(
-            mataKuliahEvent = MataKuliahEvent(),
-        )
+        uiState = uiState.copy(mataKuliahEvent = mataKuliahEvent)
     }
 
     //Validasi input nama pengguna
@@ -76,6 +75,7 @@ data class MkUiState(
     val mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     val isEntryValid: MkFormErrorState = MkFormErrorState(),
     val snackBarMessage: String? = null,
+
 )
 
 data class MkFormErrorState(
