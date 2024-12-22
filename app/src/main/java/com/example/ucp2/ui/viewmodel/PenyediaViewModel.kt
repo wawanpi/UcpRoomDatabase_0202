@@ -22,6 +22,7 @@ object PenyediaMkViewModel {
         initializer {
             MataKuliahViewModel(
                 kampusApp().containerApp.repositoryMk,
+                kampusApp().containerApp.repositoryDsn
             )
         }
         initializer {
@@ -39,6 +40,7 @@ object PenyediaMkViewModel {
             UpdateMkViewModel(
                 createSavedStateHandle(),
                 kampusApp().containerApp.repositoryMk,
+                kampusApp().containerApp.repositoryDsn
             )
         }
     }

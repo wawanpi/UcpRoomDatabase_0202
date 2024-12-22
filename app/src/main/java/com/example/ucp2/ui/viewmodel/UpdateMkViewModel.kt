@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ucp2.data.entity.Dosen
 import com.example.ucp2.data.entity.MataKuliah
+import com.example.ucp2.repository.RepositoryDsn
 import com.example.ucp2.repository.RepositoryMk
 import com.example.ucp2.ui.navigation.DestinasiUpdate
 import kotlinx.coroutines.flow.filterNotNull
@@ -15,26 +17,41 @@ import kotlinx.coroutines.launch
 
 class UpdateMkViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repositoryMk: RepositoryMk
+    private val repositoryMk: RepositoryMk,
+    private val repossioryDsn: RepositoryDsn
 ) : ViewModel() {
+    // List of dosen
+    var dosentList by mutableStateOf<List<Dosen>>(emptyList())
+        private set
+
     var updateUiState by mutableStateOf(MkUiState())
         private set
     private val _kode: String = checkNotNull(savedStateHandle[DestinasiUpdate.KODE])
 
     init {
-        viewModelScope.launch{
+        // Get Mata Kuliah data
+        viewModelScope.launch {
             updateUiState = repositoryMk.getMk(_kode)
                 .filterNotNull()
                 .first()
                 .toUIStateMk()
         }
+
+        // Get Dosen list and update UI state
+        viewModelScope.launch {
+            val dosentListFromRepo = repossioryDsn.getAllDsn().first()
+            updateUiState = updateUiState.copy(dosentList = dosentListFromRepo)
+        }
     }
 
+    // Update state with MataKuliahEvent
     fun updateState(mataKuliahEvent: MataKuliahEvent) {
         updateUiState = updateUiState.copy(
             mataKuliahEvent = mataKuliahEvent,
         )
     }
+
+    // Validate input fields
     fun validateFields(): Boolean {
         val event = updateUiState.mataKuliahEvent
         val errorState = MkFormErrorState(
@@ -48,6 +65,8 @@ class UpdateMkViewModel(
         updateUiState = updateUiState.copy(isEntryValid = errorState)
         return errorState.isValid()
     }
+
+    // Update MataKuliah data
     fun updateData() {
         val currentEvent = updateUiState.mataKuliahEvent
         if (validateFields()) {
@@ -72,11 +91,12 @@ class UpdateMkViewModel(
         }
     }
 
+    // Reset Snackbar message
     fun resetSnackBarMessage() {
         updateUiState = updateUiState.copy(snackBarMessage = null)
-
     }
 }
+
 fun MataKuliah.toUIStateMk(): MkUiState = MkUiState(
     mataKuliahEvent = this.toDetailUiEvent(),
 )

@@ -5,19 +5,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ucp2.data.entity.Dosen
 import com.example.ucp2.data.entity.MataKuliah
 import com.example.ucp2.repository.RepositoryDsn
+
 import com.example.ucp2.repository.RepositoryMk
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MataKuliahViewModel (
     private val repositoryMk: RepositoryMk,
+    private val repositoryDsn: RepositoryDsn
+
 ) : ViewModel(){
 
     var uiState by mutableStateOf(MkUiState())
+    private set
+    //Dosent list
+    var dosentList by mutableStateOf<List<Dosen>>(emptyList())
+    private set
 
-
+    init {
+        viewModelScope.launch {
+            repositoryDsn.getAllDsn().collect {dosentList ->
+                this@MataKuliahViewModel.dosentList = dosentList
+                updateUiState()
+            }
+        }
+    }
 
     //Memperbarui state berdasarkan input pengguna
     fun updateState(mataKuliahEvent: MataKuliahEvent){
@@ -69,12 +83,17 @@ class MataKuliahViewModel (
     fun resetSnackBarMessage(){
         uiState = uiState.copy(snackBarMessage = null)
     }
+    private fun updateUiState(){
+        uiState = uiState.copy(dosentList = dosentList)
+    }
+
 }
 
 data class MkUiState(
     val mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     val isEntryValid: MkFormErrorState = MkFormErrorState(),
     val snackBarMessage: String? = null,
+    val dosentList: List<Dosen> = emptyList()
 
 )
 
