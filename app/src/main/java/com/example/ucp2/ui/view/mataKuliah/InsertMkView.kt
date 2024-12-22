@@ -8,7 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -17,14 +24,18 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ucp2.data.entity.Dosen
 import com.example.ucp2.ui.costumwidget.CustomTopAppBar
 import com.example.ucp2.ui.navigation.AlamatNavigasi
 import com.example.ucp2.ui.viewmodel.MataKuliahEvent
@@ -80,6 +91,7 @@ fun InsertMkView(
             //Isi Body
             InsertBodyMk(
                 uiState = uiState,
+                dosenList = uiState.dosentList,
                 onValueChange = { updateEvent ->
                     viewModel.updateState(updateEvent)
                 },
@@ -99,7 +111,8 @@ fun InsertBodyMk(
     modifier: Modifier = Modifier,
     onValueChange: (MataKuliahEvent) -> Unit,
     uiState: MkUiState,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    dosenList: List<Dosen>
 ){
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -110,7 +123,8 @@ fun InsertBodyMk(
             mataKuliahEvent = uiState.mataKuliahEvent,
             onValueChange = onValueChange,
             errorState = uiState.isEntryValid,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            dosenList = dosenList
 
         )
         Button(
@@ -122,13 +136,17 @@ fun InsertBodyMk(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormMataKuliah(
     mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
     onValueChange: (MataKuliahEvent) -> Unit,
     errorState: MkFormErrorState = MkFormErrorState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dosenList: List<Dosen>
 ) {
+    var chosenDropdown by remember { mutableStateOf(mataKuliahEvent.dosenPengampu) } // Default to the current value
+    var expanded by remember { mutableStateOf(false) }
 
     val semester = listOf("Ganjil", "Genap")
     val jenis = listOf("Mata Kuliah Wajib", "Mata Kuliah Pilihan")
@@ -206,7 +224,7 @@ fun FormMataKuliah(
         Text(text = errorState.sks ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "jenis")
+        Text(text = "Jenis")
         Row {
             jenis.forEach { jenis ->
                 Row(
@@ -226,22 +244,40 @@ fun FormMataKuliah(
                 }
             }
         }
-        Text(
-            text = errorState.jenis ?: "",
-            color = Color.Red
-        )
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = mataKuliahEvent.dosenPengampu,
-            onValueChange = {
-                onValueChange(mataKuliahEvent.copy(dosenPengampu = it))
-            },
-            label = { Text("Dosen Pengampu") },
-            isError = errorState.dosenPengampu != null,
-            placeholder = { Text("Masukkan Dosen Pengampu") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        Text(text = errorState.dosenPengampu ?: "", color = Color.Red)
 
+        // ExposedDropdownMenuBox for Dosen Pengampu
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = chosenDropdown,
+                onValueChange = { },
+                label = { Text("Pilih Dosen Pengampu") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                readOnly = true,
+                isError = errorState.dosenPengampu != null
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                dosenList.forEach { dosen ->
+                    DropdownMenuItem(
+                        onClick = {
+                            chosenDropdown = dosen.nama
+                            expanded = false
+                            onValueChange(mataKuliahEvent.copy(dosenPengampu = dosen.nama))
+                        },
+                        text = { Text(text = dosen.nama) }
+                    )
+                }
+            }
+        }
+        Text(text = errorState.dosenPengampu ?: "", color = Color.Red)
     }
 }
