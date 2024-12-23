@@ -8,8 +8,12 @@ Setelah Di tambah
 ![image](https://github.com/user-attachments/assets/70c4c8c1-9742-4ab9-b078-e21f826643d0)
 Home Daftar Matakuliah
 ![image](https://github.com/user-attachments/assets/9648ae1a-b866-4eeb-a475-05302fbc4510)
-Tambah Dosen
+Tambah Matakuliah
 ![image](https://github.com/user-attachments/assets/ccf16f69-09e8-4a67-911f-20cc14ddce88)
+Setelah di Tambah
+![image](https://github.com/user-attachments/assets/e7033e07-abb4-4cb4-a522-1a1681a85104)
+
+
 
 
 
