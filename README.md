@@ -24,6 +24,8 @@ Setelah di Hapus
 ![image](https://github.com/user-attachments/assets/bd413ce4-49b0-44b1-b325-7ddb19ce8df1)
 Tampilan Home
 ![image](https://github.com/user-attachments/assets/21d89636-f1e2-4401-b1b2-25b3395f1b9e)
+![image](https://github.com/user-attachments/assets/451a6a8c-dd5a-47e4-9fa6-47b65bcaf257)
+
 
 
 
