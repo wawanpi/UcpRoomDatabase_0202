@@ -12,6 +12,24 @@ Tambah Matakuliah
 ![image](https://github.com/user-attachments/assets/ccf16f69-09e8-4a67-911f-20cc14ddce88)
 Setelah di Tambah
 ![image](https://github.com/user-attachments/assets/e7033e07-abb4-4cb4-a522-1a1681a85104)
+Edit
+![image](https://github.com/user-attachments/assets/8c6e6fda-80c4-4af1-bce9-1e550b39a007)
+Setelah Edit
+![image](https://github.com/user-attachments/assets/6993d6a5-76d6-4118-aeae-06f7bff3a825)
+![image](https://github.com/user-attachments/assets/df077d75-369f-4786-88f7-2c5556f4ce04)
+Hapus
+![image](https://github.com/user-attachments/assets/55aaca35-51ba-42a7-940f-6ebfbca1877f)
+![image](https://github.com/user-attachments/assets/0e6950f5-1a40-426d-bed1-c3d8fcc04812)
+Setelah di Hapus
+![image](https://github.com/user-attachments/assets/bd413ce4-49b0-44b1-b325-7ddb19ce8df1)
+Tampilan Home
+![image](https://github.com/user-attachments/assets/21d89636-f1e2-4401-b1b2-25b3395f1b9e)
+
+
+
+
+
+
 
 
 
