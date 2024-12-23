@@ -85,7 +85,8 @@ fun InsertMkView(
             CustomTopAppBar(
                 onBack = onBack,
                 showBackButton = true,
-                judul = "Tambah Mata Kuliah"
+                judul = "Tambah Mata Kuliah",
+
             )
 
             //Isi Body
@@ -149,12 +150,13 @@ fun FormMataKuliah(
     var expanded by remember { mutableStateOf(false) }
 
     val semester = listOf("Ganjil", "Genap")
-    val jenis = listOf("Mata Kuliah Wajib", "Mata Kuliah Pilihan")
+    val jenis = listOf(" Wajib", "Peminatan")
 
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
 
+        // Nama Mata Kuliah
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.nama,
@@ -170,20 +172,24 @@ fun FormMataKuliah(
             color = Color.Red
         )
 
+        // Kode Mata Kuliah
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = mataKuliahEvent.kode, onValueChange = {
+            value = mataKuliahEvent.kode,
+            onValueChange = {
                 onValueChange(mataKuliahEvent.copy(kode = it))
             },
             label = { Text("Kode") },
             isError = errorState.kode != null,
             placeholder = { Text("Masukkan Kode") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text) // Atur untuk teks atau alphanumeric
         )
 
         Text(text = errorState.kode ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Semester
         Text(text = "Semester")
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -198,8 +204,7 @@ fun FormMataKuliah(
                         onClick = {
                             onValueChange(mataKuliahEvent.copy(semester = sr))
                         },
-
-                        )
+                    )
                     Text(
                         text = sr,
                     )
@@ -211,6 +216,7 @@ fun FormMataKuliah(
             color = Color.Red
         )
 
+        // SKS
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mataKuliahEvent.sks,
@@ -220,11 +226,14 @@ fun FormMataKuliah(
             label = { Text("Sks") },
             isError = errorState.sks != null,
             placeholder = { Text("Masukkan Sks") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Set keyboard untuk angka
         )
         Text(text = errorState.sks ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Jenis")
+
+        // Jenis Mata Kuliah
+        Text(text = "Jenis Mata Kuliah")
         Row {
             jenis.forEach { jenis ->
                 Row(

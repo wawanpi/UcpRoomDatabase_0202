@@ -133,7 +133,7 @@ fun BodyDetailMk(
                 }
             }
         }
-        detailUiState.isEventNotEmpty -> {
+        detailUiState.isUiEventEmpty -> {
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center

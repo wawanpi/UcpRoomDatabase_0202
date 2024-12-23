@@ -57,7 +57,9 @@ class UpdateMkViewModel(
         val errorState = MkFormErrorState(
             kode = if (event.kode.isNotEmpty()) null else "Kode tidak boleh kosong",
             nama = if (event.nama.isNotEmpty()) null else "Nama tidak boleh kosong",
-            sks = if (event.sks.isNotEmpty()) null else "Sks tidak boleh kosong",
+            sks = if (event.sks.isNotEmpty()) {
+                if (event.sks.toIntOrNull() != null) null else "SKS harus berupa angka"
+            } else "SKS tidak boleh kosong",
             semester = if (event.semester.isNotEmpty()) null else "Semester tidak boleh kosong",
             jenis = if (event.jenis.isNotEmpty()) null else "Kelas tidak boleh kosong",
             dosenPengampu = if (event.dosenPengampu.isNotEmpty()) null else "Dosen Pengampu tidak boleh kosong"

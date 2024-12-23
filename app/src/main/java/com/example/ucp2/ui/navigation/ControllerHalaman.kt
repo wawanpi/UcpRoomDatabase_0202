@@ -1,5 +1,6 @@
 package com.example.ucp2.ui.navigation
 
+import HomeMkView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -14,7 +15,6 @@ import com.example.ucp2.ui.view.dosen.HomeDsnView
 import com.example.ucp2.ui.view.dosen.InsertDsnView
 import com.example.ucp2.ui.view.mataKuliah.DestinasiInsertMk
 import com.example.ucp2.ui.view.mataKuliah.DetailMkView
-import com.example.ucp2.ui.view.mataKuliah.HomeMkView
 import com.example.ucp2.ui.view.mataKuliah.InsertMkView
 import com.example.ucp2.ui.view.mataKuliah.UpdateMkView
 import com.example.ucp2.ui.viewmodel.DetailMkViewModel

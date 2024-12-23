@@ -1,21 +1,29 @@
-package com.example.ucp2.ui.view.mataKuliah
-
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -31,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,16 +52,15 @@ import com.example.ucp2.ui.viewmodel.PenyediaMkViewModel
 import kotlinx.coroutines.launch
 
 
-
 @Composable
 fun HomeMkView(
-    viewModel : HomeMkViewModel = viewModel(factory = PenyediaMkViewModel.Factory),
-    onAddMk: () -> Unit = { },
-    onBack: () -> Unit = { },
-    onDetailClick: (String) -> Unit = { },
+    viewModel: HomeMkViewModel = viewModel(factory = PenyediaMkViewModel.Factory),
+    onAddMk: () -> Unit = {},
+    onBack: () -> Unit = {},
+    onDetailClick: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-){
-    Scaffold (
+) {
+    Scaffold(
         topBar = {
             CustomTopAppBar(
                 judul = "Daftar Mata Kuliah",
@@ -78,9 +86,7 @@ fun HomeMkView(
 
         BodyHomeMkView(
             homeMkUiState = homeMkUiState,
-            onClick = {
-                onDetailClick(it)
-            },
+            onClick = onDetailClick,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -91,37 +97,35 @@ fun BodyHomeMkView(
     homeMkUiState: HomeMkUiState,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() } // snacbarState
+    val snackbarHostState = remember { SnackbarHostState() }
+
     when {
         homeMkUiState.isLoading -> {
-            // Menampilkan indikator loading
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 CircularProgressIndicator()
             }
         }
         homeMkUiState.isError -> {
-            //Menampilkan pesan error
             LaunchedEffect(homeMkUiState.errorMessage) {
                 homeMkUiState.errorMessage?.let { message ->
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message) // Tampilkan snackbar
+                        snackbarHostState.showSnackbar(message)
                     }
                 }
             }
         }
         homeMkUiState.listMk.isEmpty() -> {
-            //Menampilkan pesan jika data kosong
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Text(
-                    text = "Tidak ada data Mata kuliah",
+                    text = "Tidak ada data Mata Kuliah",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
@@ -129,13 +133,9 @@ fun BodyHomeMkView(
             }
         }
         else -> {
-            //Menampilkan daftar Matakuliah
             ListMataKuliah(
                 listMk = homeMkUiState.listMk,
-                onClick = {
-                    onClick(it)
-                    println(it)
-                },
+                onClick = onClick,
                 modifier = modifier
             )
         }
@@ -146,22 +146,17 @@ fun BodyHomeMkView(
 fun ListMataKuliah(
     listMk: List<MataKuliah>,
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit = { }
+    onClick: (String) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-        items(
-            items = listMk,
-            itemContent = { mk ->
-                CardMk(
-                    mk = mk,
-                    onClick = {
-                        onClick(mk.kode)
-                    }
-                )
-            }
-        )
+        items(items = listMk) { mk ->
+            CardMk(
+                mk = mk,
+                onClick = { onClick(mk.kode) }
+            )
+        }
     }
 }
 
@@ -170,51 +165,117 @@ fun ListMataKuliah(
 fun CardMk(
     mk: MataKuliah,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
+    onClick: () -> Unit = {},
 ) {
     Card(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF00BFFF) // Warna latar Deep Sky Blue
+        ),
+        shape = MaterialTheme.shapes.medium // Sudut melengkung
     ) {
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(
+                    imageVector = Icons.Filled.Create,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = mk.nama,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleLarge, // Update h6
+                    color = Color.White
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp) // Tambahkan import Divider
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
-                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(
+                    imageVector = Icons.Filled.DateRange,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = mk.kode,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    text = "Kode: ${mk.kode}",
+                    style = MaterialTheme.typography.bodyLarge, // Update body1
+                    color = Color.White
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Home, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = mk.semester,
-                    fontWeight = FontWeight.Bold,
+                    text = "Semester: ${mk.semester}",
+                    style = MaterialTheme.typography.bodyLarge, // Update body1
+                    color = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Notifications,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "SKS: ${mk.sks}",
+                    style = MaterialTheme.typography.bodyMedium, // Update body2
+                    color = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ThumbUp,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Jenis: ${mk.jenis}",
+                    style = MaterialTheme.typography.bodyMedium, // Update body2
+                    color = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Face,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Dosen : ${mk.dosenPengampu}",
+                    style = MaterialTheme.typography.bodyMedium, // Update body2
+                    color = Color.White
                 )
             }
         }

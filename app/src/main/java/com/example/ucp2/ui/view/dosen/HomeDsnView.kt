@@ -1,5 +1,6 @@
 package com.example.ucp2.ui.view.dosen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +56,7 @@ fun HomeDsnView(
 ){
     Scaffold (
         topBar = {
-           CustomTopAppBar (
+            CustomTopAppBar (
                 judul = "Daftar Dosen",
                 showBackButton = true,
                 onBack = onBack,
@@ -69,7 +74,8 @@ fun HomeDsnView(
                     contentDescription = "Tambah Dosen",
                 )
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background,  // Set background color for Scaffold
     ) { innerPadding ->
         val homeUiState by viewModel.homeUiState.collectAsState()
 
@@ -78,7 +84,9 @@ fun HomeDsnView(
             onClick = {
                 onDetailClick(it)
             },
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)  // Set background for body
         )
     }
 }
@@ -90,51 +98,57 @@ fun BodyHomeDsnView(
     modifier: Modifier = Modifier,
 ){
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() } // snacbarState
-    when {
-        homeUiState.isLoading -> {
-            // Menampilkan indikator loading
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                CircularProgressIndicator()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface) // Background color for content
+    ) {
+        when {
+            homeUiState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
             }
-        }
-        homeUiState.isError -> {
-            //Menampilkan pesan error
-            LaunchedEffect(homeUiState.errorMessage) {
-                homeUiState.errorMessage?.let { message ->
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message) // Tampilkan snackbar
+            homeUiState.isError -> {
+                LaunchedEffect(homeUiState.errorMessage) {
+                    homeUiState.errorMessage?.let { message ->
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(message)
+                        }
                     }
                 }
             }
-        }
-        homeUiState.listDsn.isEmpty() -> {
-            //Menampilkan pesan jika data kosong
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Text(
-                    text = "Tidak ada data Dosen",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp)
+            homeUiState.listDsn.isEmpty() -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "Tidak ada data Dosen",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+            else -> {
+                ListDosen(
+                    listDsn = homeUiState.listDsn,
+                    onClick = {
+                        onClick(it)
+                    },
+                    modifier = modifier
                 )
             }
-        }
-        else -> {
-            //Menampilkan daftar dosen
-            ListDosen(
-                listDsn = homeUiState.listDsn,
-                onClick = {
-                    onClick(it)
-                    println(it)
-                },
-                modifier = modifier
-            )
         }
     }
 }
@@ -147,6 +161,8 @@ fun ListDosen(
 ) {
     LazyColumn(
         modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         items(
             items = listDsn,
@@ -155,13 +171,13 @@ fun ListDosen(
                     dsn = dsn,
                     onClick = {
                         onClick(dsn.nidn)
-                    }
+                    },
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
         )
     }
 }
-
 
 @Composable
 fun CardDsn(
@@ -173,45 +189,52 @@ fun CardDsn(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-    ) {
+            .shadow(8.dp, shape = MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.medium)
+            .background(Color(0xFF00BFFF))    ) {
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(imageVector = Icons.Filled.Person, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
                     text = dsn.nama,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
                 Icon(imageVector = Icons.Filled.DateRange, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
                     text = dsn.nidn,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(imageVector = Icons.Filled.Face, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
                     text = dsn.jenisKelamin,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }

@@ -131,7 +131,7 @@ fun HomeView(
                     text = "Mata Kuliah",
                     gradient = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0xFF95A263), // Hijau utama
+                            Color(0xFFF0FFFF), // Hijau utama
                             Color.White      // Warna lebih terang
                         )
                     ),
